@@ -38,6 +38,37 @@ func TestGetUser(t *testing.T) {
 	}
 }
 
+func TestCreateUser(t *testing.T) {
+	t.Parallel()
+
+	ctx := context.Background()
+	repositories, users := initUserRepositories(t)
+
+	for i := range repositories {
+		repo := repositories[i]
+
+		t.Run("it should be possible to create a new user", func(t *testing.T) {
+			t.Parallel()
+
+			user := model.NewUser("sam", "smith", "ssmith@userstore.local")
+
+			u, err := repo.CreateUser(ctx, user)
+			assert.NoError(t, err)
+			assert.Equal(t, *user, *u)
+		})
+
+		t.Run("creating an existing user should return user already exists", func(t *testing.T) {
+			t.Parallel()
+
+			user := users[0]
+
+			u, err := repo.CreateUser(ctx, user)
+			assert.ErrorIs(t, err, adapter.ErrUserAlreadyExist)
+			assert.Nil(t, u)
+		})
+	}
+}
+
 func initUserRepositories(t *testing.T) ([]model.UserRepository, []*model.User) {
 	t.Helper()
 

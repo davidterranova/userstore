@@ -10,7 +10,10 @@ import (
 	"github.com/google/uuid"
 )
 
-var ErrUserNotFound = errors.New("user not found")
+var (
+	ErrUserNotFound     = errors.New("user not found")
+	ErrUserAlreadyExist = errors.New("user already exists")
+)
 
 type InMemoryUserRepository struct {
 	users map[uuid.UUID]model.User
@@ -39,4 +42,17 @@ func (r *InMemoryUserRepository) GetUser(_ context.Context, id uuid.UUID) (*mode
 	}
 
 	return &u, nil
+}
+
+func (r *InMemoryUserRepository) CreateUser(ctx context.Context, user *model.User) (*model.User, error) {
+	_, err := r.GetUser(ctx, user.GetId())
+	if err == nil {
+		return nil, ErrUserAlreadyExist
+	}
+
+	r.mutex.Lock()
+	r.users[user.GetId()] = *user
+	r.mutex.Unlock()
+
+	return user, nil
 }
