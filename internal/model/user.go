@@ -16,8 +16,8 @@ type User struct {
 	email     string
 }
 
-func NewUser(firstName, lastName, email string) User {
-	return User{
+func NewUser(firstName, lastName, email string) *User {
+	return &User{
 		id:        uuid.New(),
 		createdAt: time.Now().UTC().Round(time.Millisecond),
 
@@ -27,22 +27,22 @@ func NewUser(firstName, lastName, email string) User {
 	}
 }
 
-func (u User) GetId() uuid.UUID {
+func (u *User) GetId() uuid.UUID {
 	return u.id
 }
 
-func (u User) GetCreatedAt() time.Time {
+func (u *User) GetCreatedAt() time.Time {
 	return u.createdAt
 }
 
-func (u User) GetFirstName() string {
+func (u *User) GetFirstName() string {
 	return u.firstName
 }
 
-func (u User) GetLastName() string {
+func (u *User) GetLastName() string {
 	return u.lastName
 }
 
-func (u User) GetEmail() string {
+func (u *User) GetEmail() string {
 	return u.email
 }
