@@ -28,3 +28,8 @@ test-unit:
 .PHONY: format
 format:
 	gofumpt -w ./..
+
+# it requires having a mockgen installed. See: https://github.com/golang/mock
+.PHONY: mockgen
+mockgen:
+	$(GOCMD) generate ./...
