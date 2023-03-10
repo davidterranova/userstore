@@ -24,3 +24,7 @@ lint-fix:
 .PHONY: test-unit
 test-unit:
 	$(GOTEST) ./... -count=1 -race -cover
+
+.PHONY: format
+format:
+	gofumpt -w ./..
