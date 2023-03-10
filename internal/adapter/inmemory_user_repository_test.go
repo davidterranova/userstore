@@ -36,7 +36,6 @@ func TestGetUser(t *testing.T) {
 			assert.Nil(t, user)
 		})
 	}
-
 }
 
 func initUserRepositories(t *testing.T) ([]model.UserRepository, []*model.User) {

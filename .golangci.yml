@@ -1,0 +1,63 @@
+run:
+  go: 1.20.0
+  # skip-dirs:
+
+linters:
+  disable-all: true
+  enable:
+    - asasalint
+    - asciicheck
+    - bidichk
+    - bodyclose
+    - depguard
+    - dupl
+    - errcheck
+    - execinquery
+    - exhaustive
+    - exportloopref
+    - forcetypeassert
+    - gci
+    - gocritic
+    - goconst
+    - gocognit
+    - gocyclo
+    - gofumpt
+    - goheader
+    - goimports
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - govet
+    - grouper
+    - importas
+    - ineffassign
+    - ireturn
+    - maintidx
+    - makezero
+    - misspell
+    - nakedret
+    - noctx
+    - prealloc
+    - predeclared
+    - reassign
+    - staticcheck
+    - tenv
+    - tparallel
+    - typecheck
+    - unconvert
+    - unused
+    - usestdlibvars
+    - whitespace
+issues:
+  exclude-rules:
+    - path: _test.go
+      linters:
+        - bodyclose #using http test requires exclude bodyclose as it gives false-positives
+        - dupl
+        - goconst
+        - gosec
+        - noctx
+        - maintidx # FIXME: less complex code
+  # show all of the issues except part of them
+  max-issues-per-linter: 0
+  max-same-issues: 0
