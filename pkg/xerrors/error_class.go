@@ -9,11 +9,11 @@ const (
 )
 
 type ClassError struct {
-	class int
+	class Class
 	inner error
 }
 
-func NewClassError(class int, inner error) *ClassError {
+func NewClassError(class Class, inner error) *ClassError {
 	if inner == nil {
 		return nil
 	}
@@ -22,6 +22,10 @@ func NewClassError(class int, inner error) *ClassError {
 		class: class,
 		inner: inner,
 	}
+}
+
+func (e *ClassError) Class() Class {
+	return e.class
 }
 
 func (e *ClassError) Error() string {
