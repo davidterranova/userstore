@@ -1,3 +1,4 @@
+//go:generate mockgen -destination=user_repository_mock.go -package=model . UserRepository
 package model
 
 import (
