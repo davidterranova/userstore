@@ -14,10 +14,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type TestContainer struct {
-	UserRepository *model.MockUserRepository
-}
-
 func TestGetUser(t *testing.T) {
 	t.Parallel()
 
@@ -136,14 +132,4 @@ func TestGetUser(t *testing.T) {
 		classError, _ = err.(*xerrors.ClassError)
 		assert.Equal(t, xerrors.ClassInternal, classError.Class())
 	})
-}
-
-func setup(t *testing.T) *TestContainer {
-	t.Helper()
-
-	ctrl := gomock.NewController(t)
-
-	return &TestContainer{
-		UserRepository: model.NewMockUserRepository(ctrl),
-	}
 }

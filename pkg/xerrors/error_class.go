@@ -6,6 +6,7 @@ const (
 	ClassInternal   Class = 500
 	ClassBadRequest Class = 400
 	ClassNotFound   Class = 404
+	ClassConflict   Class = 409
 )
 
 type ClassError struct {
