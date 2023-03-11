@@ -1,0 +1,23 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=userstore
+    volumes:
+      - ./pkg/pg/bootstrap:/docker-entrypoint-initdb.d
+    command: [ "postgres", "-c", "log_statement=all" ]
+  
+  migrate:
+    build:
+      context: ./pkg/pg
+    env_file: .env
+    depends_on:
+      - db
+    volumes:
+      - ./pkg/pg/migrations:/migrations:ro
+    command: [ "/migrate.sh" ]
