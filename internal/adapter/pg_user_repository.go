@@ -37,6 +37,10 @@ func NewPGUserRepository(db *sqlx.DB) *PGUserRepository {
 	}
 }
 
+func (r *PGUserRepository) Name() string {
+	return "pg_user_repository"
+}
+
 func (r *PGUserRepository) GetUser(ctx context.Context, id uuid.UUID) (*model.User, error) {
 	var user pgUser
 	err := r.db.GetContext(ctx, &user, getUserQuery, id)
@@ -53,7 +57,6 @@ func (r *PGUserRepository) GetUser(ctx context.Context, id uuid.UUID) (*model.Us
 func (r *PGUserRepository) CreateUser(ctx context.Context, u *model.User) (*model.User, error) {
 	user := fromUser(u)
 	_, err := r.db.NamedExecContext(ctx, insertUserQuery, user)
-
 	if err != nil {
 		if isPgError(err, "23505") {
 			return nil, ErrUserAlreadyExist

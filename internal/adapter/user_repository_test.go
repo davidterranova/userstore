@@ -21,60 +21,62 @@ var (
 )
 
 func TestGetUser(t *testing.T) {
-	t.Parallel()
-
 	ctx := context.Background()
 	repositories, users := initUserRepositories(t)
 
 	for i := range repositories {
 		repo := repositories[i]
 
-		t.Run("it should be possible to fetch an existing user", func(t *testing.T) {
+		t.Run(repo.Name(), func(t *testing.T) {
 			t.Parallel()
 
-			u := users[0]
-			user, err := repo.GetUser(ctx, u.GetId())
-			assert.NoError(t, err)
-			assert.Equal(t, *u, *user)
-		})
+			t.Run("it should be possible to fetch an existing user", func(t *testing.T) {
+				t.Parallel()
 
-		t.Run("if should return user not found if user does not exist", func(t *testing.T) {
-			t.Parallel()
+				u := users[0]
+				user, err := repo.GetUser(ctx, u.GetId())
+				assert.NoError(t, err)
+				assert.Equal(t, *u, *user)
+			})
 
-			user, err := repo.GetUser(ctx, uuid.New())
-			assert.ErrorIs(t, err, adapter.ErrUserNotFound)
-			assert.Nil(t, user)
+			t.Run("if should return user not found if user does not exist", func(t *testing.T) {
+				t.Parallel()
+
+				user, err := repo.GetUser(ctx, uuid.New())
+				assert.ErrorIs(t, err, adapter.ErrUserNotFound)
+				assert.Nil(t, user)
+			})
 		})
 	}
 }
 
 func TestCreateUser(t *testing.T) {
-	t.Parallel()
-
 	ctx := context.Background()
 	repositories, users := initUserRepositories(t)
 
 	for i := range repositories {
 		repo := repositories[i]
 
-		t.Run("it should be possible to create a new user", func(t *testing.T) {
-			t.Parallel()
+		t.Run(repo.Name(), func(t *testing.T) {
+			t.Run("it should be possible to create a new user", func(t *testing.T) {
+				t.Parallel()
 
-			user := model.NewUser("sam", "smith", emailWithSeed(t, "ssmith"))
+				user := model.NewUser("sam", "smith", emailWithSeed(t, "ssmith"))
 
-			u, err := repo.CreateUser(ctx, user)
-			assert.NoError(t, err)
-			assert.Equal(t, *user, *u)
-		})
+				u, err := repo.CreateUser(ctx, user)
+				assert.NoError(t, err)
+				assert.Equal(t, *user, *u)
+			})
 
-		t.Run("creating an existing user should return user already exists", func(t *testing.T) {
-			t.Parallel()
+			t.Run("creating an existing user should return user already exists", func(t *testing.T) {
+				t.Parallel()
 
-			user := users[0]
+				user := users[0]
 
-			u, err := repo.CreateUser(ctx, user)
-			assert.ErrorIs(t, err, adapter.ErrUserAlreadyExist)
-			assert.Nil(t, u)
+				u, err := repo.CreateUser(ctx, user)
+				assert.ErrorIs(t, err, adapter.ErrUserAlreadyExist)
+				assert.Nil(t, u)
+			})
 		})
 	}
 }
@@ -88,7 +90,6 @@ func initUserRepositories(t *testing.T) ([]model.UserRepository, []*model.User) 
 		model.NewUser("luke", "skywalker", emailWithSeed(t, "lskywalker")),
 	}
 
-	inMemory := adapter.NewInMemoryUserRepository(users...)
 	pg := adapter.NewPGUserRepository(pg.TestConnection(t))
 
 	fixture.Do(func() {
@@ -98,7 +99,7 @@ func initUserRepositories(t *testing.T) ([]model.UserRepository, []*model.User) 
 		}
 	})
 
-	return []model.UserRepository{inMemory, pg}, users
+	return []model.UserRepository{pg}, users
 }
 
 func emailWithSeed(t *testing.T, email string) string {
