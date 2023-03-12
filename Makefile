@@ -27,6 +27,11 @@ lint-fix:
 test-unit:
 	$(GOTEST) ./... -count=1 -race -cover
 
+.PHONY: test-integration
+test-integration: 
+	export $$(cat .env) xargs && \
+	$(GOTEST) ./... -count=1 -race -cover -tags integration
+
 .PHONY: format
 format:
 	gofumpt -w ./..
