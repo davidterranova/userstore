@@ -13,6 +13,8 @@ GOTEST ?=$(GOCMD) test
 GORUN=$(GOCMD) run
 GOLANG_LINTER ?= golangci-lint
 
+DOCKER_COMPOSE_CMD=docker-compose -p userstore
+
 .PHONY: lint
 lint:
 	$(GOLANG_LINTER) run ./...
@@ -25,6 +27,11 @@ lint-fix:
 test-unit:
 	$(GOTEST) ./... -count=1 -race -cover
 
+.PHONY: test-integration
+test-integration: 
+	export $$(cat .env) xargs && \
+	$(GOTEST) ./... -count=1 -race -cover -tags integration
+
 .PHONY: format
 format:
 	gofumpt -w ./..
@@ -33,3 +40,11 @@ format:
 .PHONY: mockgen
 mockgen:
 	$(GOCMD) generate ./...
+
+.PHONY: env
+env:
+	cp dotenv.template .env
+
+.PHONY: compose-up
+compose-up: .env
+	$(DOCKER_COMPOSE_CMD) up -d --wait

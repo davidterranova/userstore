@@ -1,0 +1,8 @@
+ENVIRONMENT=development
+DB_HOST=db
+DB_NAME=userstore
+DB_USERNAME=postgres
+DB_PASSWORD=password
+DB_SSL_MODE=disable
+
+USERSTORE_DB_CONN_STRING=postgres://postgres:password@localhost:5432/userstore

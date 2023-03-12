@@ -27,6 +27,17 @@ func NewUser(firstName, lastName, email string) *User {
 	}
 }
 
+func NewUserFromRepository(id uuid.UUID, createdAt time.Time, firstName, lastName, email string) *User {
+	return &User{
+		id:        id,
+		createdAt: createdAt,
+
+		firstName: firstName,
+		lastName:  lastName,
+		email:     email,
+	}
+}
+
 func (u *User) GetId() uuid.UUID {
 	return u.id
 }
