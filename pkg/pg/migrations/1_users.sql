@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS users (
   created_at TIMESTAMP NOT NULL,
   first_name TEXT,
   last_name TEXT,
-  email TEXT
+  email TEXT NOT NULL UNIQUE
 );
 
 -- +migrate Down

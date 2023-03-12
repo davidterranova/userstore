@@ -1,13 +1,23 @@
+//go:build integration
+
 package adapter_test
 
 import (
 	"context"
+	"sync"
 	"testing"
 
 	"github.com/davidterranova/userstore/internal/adapter"
 	"github.com/davidterranova/userstore/internal/model"
+	"github.com/davidterranova/userstore/pkg/pg"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+)
+
+var (
+	seed    = uuid.NewString()
+	fixture sync.Once
 )
 
 func TestGetUser(t *testing.T) {
@@ -50,7 +60,7 @@ func TestCreateUser(t *testing.T) {
 		t.Run("it should be possible to create a new user", func(t *testing.T) {
 			t.Parallel()
 
-			user := model.NewUser("sam", "smith", "ssmith@userstore.local")
+			user := model.NewUser("sam", "smith", emailWithSeed(t, "ssmith"))
 
 			u, err := repo.CreateUser(ctx, user)
 			assert.NoError(t, err)
@@ -73,12 +83,26 @@ func initUserRepositories(t *testing.T) ([]model.UserRepository, []*model.User) 
 	t.Helper()
 
 	users := []*model.User{
-		model.NewUser("john", "doe", "jdoe@userstore.local"),
-		model.NewUser("dark", "vador", "dvador@userstore.local"),
-		model.NewUser("luke", "skywalker", "lskywalker@userstore.local"),
+		model.NewUser("john", "doe", emailWithSeed(t, "jdoe")),
+		model.NewUser("dark", "vador", emailWithSeed(t, "dvador")),
+		model.NewUser("luke", "skywalker", emailWithSeed(t, "lskywalker")),
 	}
 
 	inMemory := adapter.NewInMemoryUserRepository(users...)
+	pg := adapter.NewPGUserRepository(pg.TestConnection(t))
 
-	return []model.UserRepository{inMemory}, users
+	fixture.Do(func() {
+		for _, u := range users {
+			_, err := pg.CreateUser(context.Background(), u)
+			require.NoError(t, err, "user cannot be created %+v", u)
+		}
+	})
+
+	return []model.UserRepository{inMemory, pg}, users
+}
+
+func emailWithSeed(t *testing.T, email string) string {
+	t.Helper()
+
+	return email + "@" + seed + ".local"
 }
