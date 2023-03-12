@@ -7,7 +7,7 @@ import (
 
 	"github.com/davidterranova/userstore/internal/adapter"
 	"github.com/davidterranova/userstore/internal/app"
-	"github.com/davidterranova/userstore/internal/model"
+	"github.com/davidterranova/userstore/internal/domain"
 	"github.com/davidterranova/userstore/pkg/xerrors"
 	"github.com/golang/mock/gomock"
 	"github.com/google/uuid"
@@ -66,7 +66,7 @@ func TestGetUser(t *testing.T) {
 
 		ctr := setup(t)
 		handler := app.NewGetUserHandler(ctr.UserRepository)
-		repoUser := model.NewUser("john", "doe", "jdoe@userstore.local")
+		repoUser := domain.NewUser("john", "doe", "jdoe@userstore.local")
 
 		ctr.UserRepository.EXPECT().
 			GetUser(ctx, repoUser.GetId()).

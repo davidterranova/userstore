@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/davidterranova/userstore/internal/adapter"
-	"github.com/davidterranova/userstore/internal/model"
+	"github.com/davidterranova/userstore/internal/domain"
 	"github.com/davidterranova/userstore/pkg/pg"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
@@ -61,7 +61,7 @@ func TestCreateUser(t *testing.T) {
 			t.Run("it should be possible to create a new user", func(t *testing.T) {
 				t.Parallel()
 
-				user := model.NewUser("sam", "smith", emailWithSeed(t, "ssmith"))
+				user := domain.NewUser("sam", "smith", emailWithSeed(t, "ssmith"))
 
 				u, err := repo.CreateUser(ctx, user)
 				assert.NoError(t, err)
@@ -81,13 +81,13 @@ func TestCreateUser(t *testing.T) {
 	}
 }
 
-func initUserRepositories(t *testing.T) ([]model.UserRepository, []*model.User) {
+func initUserRepositories(t *testing.T) ([]domain.UserRepository, []*domain.User) {
 	t.Helper()
 
-	users := []*model.User{
-		model.NewUser("john", "doe", emailWithSeed(t, "jdoe")),
-		model.NewUser("dark", "vador", emailWithSeed(t, "dvador")),
-		model.NewUser("luke", "skywalker", emailWithSeed(t, "lskywalker")),
+	users := []*domain.User{
+		domain.NewUser("john", "doe", emailWithSeed(t, "jdoe")),
+		domain.NewUser("dark", "vador", emailWithSeed(t, "dvador")),
+		domain.NewUser("luke", "skywalker", emailWithSeed(t, "lskywalker")),
 	}
 
 	pg := adapter.NewPGUserRepository(pg.TestConnection(t))
@@ -99,7 +99,7 @@ func initUserRepositories(t *testing.T) ([]model.UserRepository, []*model.User) 
 		}
 	})
 
-	return []model.UserRepository{pg}, users
+	return []domain.UserRepository{pg}, users
 }
 
 func emailWithSeed(t *testing.T, email string) string {

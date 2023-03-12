@@ -1,13 +1,13 @@
 package app
 
-import "github.com/davidterranova/userstore/internal/model"
+import "github.com/davidterranova/userstore/internal/domain"
 
 type App struct {
 	GetUser    *GetUserHandler
 	CreateUser *CreateUserHandler
 }
 
-func New(userRepository model.UserRepository) *App {
+func New(userRepository domain.UserRepository) *App {
 	return &App{
 		GetUser:    NewGetUserHandler(userRepository),
 		CreateUser: NewCreateUserHandler(userRepository),

@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/davidterranova/userstore/internal/adapter"
-	"github.com/davidterranova/userstore/internal/model"
+	"github.com/davidterranova/userstore/internal/domain"
 	"github.com/davidterranova/userstore/pkg/xerrors"
 	"github.com/go-playground/validator"
 )
@@ -19,23 +19,23 @@ type CreateUserCmd struct {
 
 type CreateUserHandler struct {
 	validator      *validator.Validate
-	userRepository model.UserRepository
+	userRepository domain.UserRepository
 }
 
-func NewCreateUserHandler(userRepository model.UserRepository) *CreateUserHandler {
+func NewCreateUserHandler(userRepository domain.UserRepository) *CreateUserHandler {
 	return &CreateUserHandler{
 		validator:      validator.New(),
 		userRepository: userRepository,
 	}
 }
 
-func (h *CreateUserHandler) Handle(ctx context.Context, cmd CreateUserCmd) (*model.User, error) {
+func (h *CreateUserHandler) Handle(ctx context.Context, cmd CreateUserCmd) (*domain.User, error) {
 	err := h.validator.Struct(cmd)
 	if err != nil {
 		return nil, xerrors.NewClassError(xerrors.ClassBadRequest, err)
 	}
 
-	newUser := model.NewUser(
+	newUser := domain.NewUser(
 		sanitize(cmd.FirstName),
 		sanitize(cmd.LastName),
 		sanitize(cmd.Email),

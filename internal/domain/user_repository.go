@@ -1,5 +1,5 @@
-//go:generate mockgen -destination=user_repository_mock.go -package=model . UserRepository
-package model
+//go:generate mockgen -destination=user_repository_mock.go -package=domain . UserRepository
+package domain
 
 import (
 	"context"

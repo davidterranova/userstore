@@ -3,12 +3,12 @@ package app_test
 import (
 	"testing"
 
-	"github.com/davidterranova/userstore/internal/model"
+	"github.com/davidterranova/userstore/internal/domain"
 	"github.com/golang/mock/gomock"
 )
 
 type TestContainer struct {
-	UserRepository *model.MockUserRepository
+	UserRepository *domain.MockUserRepository
 }
 
 func setup(t *testing.T) *TestContainer {
@@ -17,6 +17,6 @@ func setup(t *testing.T) *TestContainer {
 	ctrl := gomock.NewController(t)
 
 	return &TestContainer{
-		UserRepository: model.NewMockUserRepository(ctrl),
+		UserRepository: domain.NewMockUserRepository(ctrl),
 	}
 }

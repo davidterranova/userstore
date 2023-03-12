@@ -6,7 +6,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/davidterranova/userstore/internal/model"
+	"github.com/davidterranova/userstore/internal/domain"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jmoiron/sqlx"
@@ -41,7 +41,7 @@ func (r *PGUserRepository) Name() string {
 	return "pg_user_repository"
 }
 
-func (r *PGUserRepository) GetUser(ctx context.Context, id uuid.UUID) (*model.User, error) {
+func (r *PGUserRepository) GetUser(ctx context.Context, id uuid.UUID) (*domain.User, error) {
 	var user pgUser
 	err := r.db.GetContext(ctx, &user, getUserQuery, id)
 	if err != nil {
@@ -54,7 +54,7 @@ func (r *PGUserRepository) GetUser(ctx context.Context, id uuid.UUID) (*model.Us
 	return toUser(&user), nil
 }
 
-func (r *PGUserRepository) CreateUser(ctx context.Context, u *model.User) (*model.User, error) {
+func (r *PGUserRepository) CreateUser(ctx context.Context, u *domain.User) (*domain.User, error) {
 	user := fromUser(u)
 	_, err := r.db.NamedExecContext(ctx, insertUserQuery, user)
 	if err != nil {
@@ -67,7 +67,7 @@ func (r *PGUserRepository) CreateUser(ctx context.Context, u *model.User) (*mode
 	return u, err
 }
 
-func fromUser(u *model.User) *pgUser {
+func fromUser(u *domain.User) *pgUser {
 	return &pgUser{
 		Id:        u.GetId(),
 		CreatedAt: u.GetCreatedAt(),
@@ -77,8 +77,8 @@ func fromUser(u *model.User) *pgUser {
 	}
 }
 
-func toUser(u *pgUser) *model.User {
-	return model.NewUserFromRepository(
+func toUser(u *pgUser) *domain.User {
+	return domain.NewUserFromRepository(
 		u.Id,
 		u.CreatedAt,
 		u.FirstName,
